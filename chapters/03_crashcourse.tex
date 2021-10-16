@@ -1,0 +1,529 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Writing --- and Publishing -- Novels with LaTeX
+% By Tammy Cravit, tammymakesthings@gmail.com
+%
+% Version     : 1.00
+% Created at  : <Thu Sep 30 06:07:37 2021>
+% Last updated: Time-stamp: <2021-10-14 10:25:18 tammy>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% File Name   : chapters/03_crashcourse.tex
+% Content     : Chapter 3: A LaTeX Crash Course
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (c) 2021, Tammy Cravit. All rights reserved.  This work is
+% licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+% International License.
+%
+% You are free to:
+%
+%     Share — copy and redistribute the material in any medium or format
+%
+%     Adapt — remix, transform, and build upon the material
+%
+%     The licensor cannot revoke these freedoms as long as you follow the
+%     license terms.
+%
+% Under the following terms:
+%
+%     Attribution — You must give appropriate credit, provide a link to the
+%     license, and indicate if changes were made. You may do so in any
+%     reasonable manner, but not in any way that suggests the licensor
+%     endorses you or your use.
+%
+%     NonCommercial — You may not use the material for commercial purposes.
+%
+%     ShareAlike — If you remix, transform, or build upon the material, you
+%     must distribute your contributions under the same license as the
+%     original.
+%
+%     No additional restrictions — You may not apply legal terms or
+%     technological measures that legally restrict others from doing anything
+%     the license permits.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{A \LaTeX Crash Course} \label{chap:crashcourse}
+
+\TeX{} (pronounced ``teKH'' with the KH being like the Scottish ``loch'') is a
+document typesetting engine developed in the 1970s by Stanford University
+computer science professor Donald Knuth. Knuth was looking to publish his
+three-volume collection, \emph{The Art of Computer Programming}, and
+determined that the typesetting tools of the time weren't up to taking
+math-rich documents and making them pretty. So, as computer people are wont to
+do, he decided to build his own typesetting tool.
+
+\TeX{} is an incredibly powerful tool, with the ability for users to define
+their own commands and extend the tool in nearly any way imaginable. The price
+of that power is that it's also very complicated and difficult for beginners
+to use. In 1984, a computer scientist named Leslie Lamport decided to build a
+set of \TeX{} commands to make it easier for ``ordinary'' users to create their
+own documents. This set of commands became \LaTeX{} (LAH-tekh or LAY-tekh). The
+current version of \LaTeX{} is called \LaTeX2e{}.
+
+This section of the document will provide a \emph{very} brief introduction to
+some of the features of \TeX{} and \LaTeX{} as they apply to our work here. It is
+emphatically \emph{not} a comprehensive guide. The canonical guide to \LaTeX
+is \cite{latex2e}, and \cite{lshort} is a good (and free) beginner's guide.
+
+\section{What Does a LaTeX File Look Like?} \label{sec:example}
+
+Before we go much further, it's worth taking the time to show you a little bit
+of what a \LaTeX{} file looks like. Here's a simple example of a book formatted
+in \LaTeX:
+
+\begin{lstlisting}
+\documentclass[12pt,twoside]{memoir}
+\usepackage{tikz}
+\usepackage{palatino}
+
+\begin{document}
+  \title{My Awesome Book} 
+  \author{Tammy Cravit}
+        
+  \chapter*{First Chapter} 
+  \label{ch01}
+
+  It was the \emph{best} of times, 
+  it was the \textbf{worst} of times.
+
+  These are some words:
+
+  \begin{itemize}
+    \item Grandiloquent
+    \item Obsequious
+    \item Idempotent.
+  \end{itemize}
+
+  \chapter*{Another Chapter} 
+  \label{ch02}
+
+  Four score and seven years ago...
+
+  \begin{center}
+    This is some centered text.
+  \end{center}
+
+  Well, I heard there was a secret chord 
+  that David played and it pleased the
+  Lord...
+\end{document}
+\end{lstlisting}
+
+There's a lot going on here, but don't worry. The important thing to know right
+here is that your written words are mixed in with \TeX{} and \LaTeX{} commands
+that tell \LaTeX{} how to format the document.
+
+If you wanted to actually format this document and turn it into a PDF file,
+you could type the above commands into your text editor, save it as
+\texttt{mynovel.tex}, and then typeset it with a command like this:
+
+\begin{minipage}{\textwidth}
+\texttt{pdflatex mynovel.tex}
+\end{minipage}
+
+This would produce the output file \texttt{mynovel.pdf}, and a whole bunch of
+``intermediate'' files used by \LaTeX{} during the processing operation. There
+are often several commands needed to fully convert a \LaTeX{} file to the
+various output formats, and we'll talk about those in sections
+\ref{chap:process} and \ref{sec:makefiles}.
+
+In my example, you'll notice a number of words which begin with a
+\texttt{\textbackslash} character. These are \TeX{} and \LaTeX{} commands. For
+example, the command \texttt{\textbackslash{}title} sets the title of the
+document, and \texttt{\textbackslash{}textbf\{\}} boldfaces the words inside
+the curly braces. You'll learn some of the more essential \LaTeX{} commands in
+the following sections.
+
+\section{A Trap For Young Players} \label{sec:special_chars}
+
+One consequence of \LaTeX{} being a markup language --- that is, one that
+intersperses commands with your text --- is that there are some characters
+which have to be treated with special care in your typing. These include the
+ampersand, percent sign and dollar sign, as well as the curly bracket
+characters and backslash. THese have special meaning for \LaTeX{}, so you have
+to ``escape'' them when they appear in your text. Here's how to type them:
+
+\begin{tabularx}{\linewidth}{|l|l|}
+\caption{Escaping Special Characters} \\
+\hline
+\textbf{To get...}          & \textbf{You need to type...}                 \\
+\hline
+\endfirsthead
+\caption{Escaping Special Characters (continued)} \\
+\hline
+\textbf{To get...}          & \textbf{You need to type...}                 \\
+\hline
+\endhead
+Ampersand (\&)              & \texttt{\textbackslash\&}                    \\
+Percent sign (\%)           & \texttt{\textbackslash\%}                    \\
+Dollar sign (\$)            & \texttt{\textbackslash\$}                    \\
+Curly brackets (\{...\} )   & \texttt{\textbackslash\{}...\texttt{\textbackslash\}} \\
+Backslash (\textbackslash)  & \texttt{\textbackslash{}textbackslash\{\}}       \\
+Underscore (\_)             & \texttt{\textbackslash{}\_}                  \\
+\hline
+\end{tabularx}
+
+There are also some characters that you \emph{can} type normally, but that
+will be typeset better if you type them using \LaTeX{}'s special
+conventions. These include:
+
+\begin{tabularx}{\linewidth}{|l|l|}
+\caption{Typesetting Punctuation Characters} \\
+\hline
+\textbf{To get...}          & \textbf{You need to type...}   \\
+\hline
+\endfirsthead
+\caption{Typesetting Punctuation Characters (continued)} \\
+\hline
+\textbf{To get...}          & \textbf{You need to type...}   \\
+\hline
+\endhead
+Single quotes (`...')       & \texttt{\`{}}...\texttt{\'{}}           \\
+Double quotes (``...'')     & \texttt{\`{}\`{}}...\texttt{\'{}\'{}}   \\
+En dash (--)                & \texttt{-{}-{}} or \texttt{\textbackslash{}textendash\{\}}    \\
+Em dash (---)               & \texttt{-{}-{}-{}} or \texttt{\textbackslash{}textemdash\{\}} \\
+Ellipsis (...)              & \texttt{...}          \\
+\hline
+\end{tabularx}
+
+The \href{https://latex.wikia.org/wiki/List_of_LaTeX_symbols}{\LaTeX{} Wiki}
+contains a comprehensive list of special symbols and how to type them. In time
+you'll find that typing these special symbols becomes second nature.xs
+
+\section{The \LaTeX{} Document Preamble} \label{sec:preamble}
+
+The ``content'' of your document (lines 4--19 of my example above) is
+contained between the \texttt{\textbackslash{}begin\{document\}} and
+\texttt{\textbackslash{}end\{document\}} commands. \TeX{} users would say the
+content is contained ``inside the \texttt{document} environment'', which is
+another way of expressing the same thing. In section \ref{sec:environments}
+we'll look at a few other \LaTeX{} environments we commonly use. So what are the
+other lines (lines 1--3 of the example)?
+
+This section of the document is called the \emph{preamble}, and they're
+responsible for setting up the document, defining other helper commands we'd
+like to use, and so forth. In my current novel template, the preamble is
+almost 300 lines of \TeX code before I write a word! But don't let that
+intimidate you. We'll talk about some of what goes there, and I'll share my
+full project template to get you started.
+
+In the sample above, the first thing you'll see in the preamble is the
+\texttt{\textbackslash{}documentclass\{\}} directive. Every \LaTeX{} file has
+one, and it tells \LaTeX{} what kind of document it is: A letter, article, book,
+report, etc. The elements inside the \texttt{[...]} characters are
+\emph{optional arguments} to the \texttt{\textbackslash{}documentclass\{\}}
+command, and in our example they tell \LaTeX{} to use a 12 point font, 8.5 x 11
+inch paper, and to format for double-sided printing.
+
+We're also telling \LaTeX{} that our document is a \texttt{memoir} document.
+\href{https://www.ctan.org/tex-archive/macros/latex/contrib/memoir}{memoir} is
+a class designed for typesetting poetry, fiction, non-fiction and mathematical
+documents, and it provides very flexible layout and design options.
+
+In line 2, we load the \texttt{tikz} \LaTeX{} package, a powerful add-on for
+creating graphics in your \LaTeX{} document. A \emph{package} in \TeX{} is a
+collection of commands that extends the capabilities of the typesetting engine
+in various ways or provides new commands. There are thousands of \TeX{} and
+\LaTeX{} packages to do all sorts of things; the \textbf{Comprehensive \TeX
+Archive Network} (\href{https://www.ctan.org}{CTAN}) provides an index
+and a network of download sites for these packages, and many of them are
+already installed by TeXLive and MacTex.
+
+Line 3 of our example loads the \texttt{palatino} package, which changes our
+document font. We'll discuss font selection later. But it's important to note
+that \LaTeX{} commands mostly focus on the \emph{structure} of your document,
+leaving the presentation up to the \TeX{} engine. You'll see more examples of
+this later in this section.
+
+\section{Document Sections} \label{sec:sectioning}
+
+Books are not, of course, a single monolithic block of text. Books come in
+parts and chapters and sections and subsections. And LaTeX lets you designate
+them, and provides a \texttt{\textbackslash{}tableofcontents\{\}} command to
+automatically generate a table of contents for your document if you so
+desire. The commands that are available to you, and the hierarchy of how they
+fit together, are:
+
+\begin{itemize}
+\item \texttt{\textbackslash{}part\{}\emph{part title}\texttt{\}}
+\item \texttt{\textbackslash{}chapter\{}\emph{chapter title}\texttt{\}}
+\item \texttt{\textbackslash{}section\{}\emph{section title}\texttt{\}}
+\item \texttt{\textbackslash{}subsection\{}\emph{subsection title}\texttt{\}}
+\end{itemize}
+
+The eagle-eyed might notice that in my example document, I used a slightly
+different command, \texttt{\textbackslash{}chapter*\{}...\texttt{\}}. This series of
+commands (you can use \texttt{\textbackslash{}part*\{}...\texttt{\}},
+\texttt{\textbackslash{}section*\{}...\texttt{\}}, and
+\texttt{\textbackslash{}subsection*\{}...\texttt{\}} too) behave differently in that
+they don't automatically number the parts, chapters, sections and
+subsections. In other words, if I write:
+
+\Example{\texttt{\textbackslash{}chapter\{Chapter The First\}}}
+
+\LaTeX{} will insert a chapter heading that looks something like:
+
+\Example{\large Chapter 1\hspace{0.5in}Chapter The First \normalsize}
+
+In contrast, if I write:
+
+\Example{\texttt{\textbackslash{}chapter*\{Chapter The First\}}}
+
+\LaTeX{} will insert a chapter heading that looks more like:
+
+\Example{\large Chapter The First \normalsize}
+
+It's a fairly common pattern in \TeX{} and \LaTeX{} for commands to have a starred
+version of themselves which behaves slightly differently. Over time, you'll
+learn the differences between the normal and starred versions of commands you use.
+
+\section{Text Formatting} \label{sec:formatting}
+
+\LaTeX{} provides a number of commands for formatting text. Here are a few of
+the common ones:
+
+\begin{tabularx}{\linewidth}{|l|l|}
+  \caption{Font Formatting Commands} \\
+  \hline
+  Command & Function \\
+  \hline
+  \endfirsthead
+  \caption{Font Formatting Commands (continued)} \\
+  \hline
+  Command & Function \\
+  \hline
+  \endhead
+  \texttt{\textbackslash{}textbf\{}...\texttt{\}}    & Boldface text. \\
+  \texttt{\textbackslash{}textit\{}...\texttt{\}}    & Italicize text. \\
+  \texttt{\textbackslash{}underline\{}...\texttt{\}} & Underline text. \\
+  \texttt{\textbackslash{}textsc\{}...\texttt{\}}    & Small caps text. \\
+  \texttt{\textbackslash{}emph\{}...\texttt{\}}      & Emphasize text. \\
+  \hline
+ \end{tabularx}
+
+You'll notice that one of these commands, \texttt{\textbackslash{}emph\{\}},
+is a bit different from the others. This command \emph{emphasizes} text. You
+should use the \texttt{\textbackslash{}emph\{\}} command to mark text as
+emphasized, because you can more easily change the style of emphasized text
+when typesetting that way. You should only use the
+\texttt{\textbackslash{}textit\{\}} command if you \emph{always} want the
+specified text to be italicized.
+
+\LaTeX also provides some commands for changing the font size of blocks of
+text. Again, you should be cautious about using these because they make
+changing your document formatting harder. \LaTeX{} expects you to use commands
+to specify the \emph{intent} behind your document, and to let it handle the
+formatting. However, if you need/want to use them, here are the font size
+commands:
+
+\begin{tabularx}{\linewidth}{|l|l|}
+\caption{Font Size Commands} \\
+\hline
+\textbf{Formatting Command} & \textbf{Resulting Text} \\
+\hline
+\endfirsthead
+\caption{Font Size Commands (continued)} \\
+\hline
+\textbf{Formatting Command} & \textbf{Resulting Text} \\
+\hline
+\endhead
+\texttt{\textbackslash{}Huge} & {\Huge Sample text} \\
+\texttt{\textbackslash{}huge} & {\huge Sample text} \\
+\texttt{\textbackslash{}LARGE} & {\LARGE Sample text} \\
+\texttt{\textbackslash{}Large} & {\Large Sample text} \\
+\texttt{\textbackslash{}large} & {\large Sample text} \\
+\texttt{\textbackslash{}normalsize} & {\normalsize Sample text} \\
+\texttt{\textbackslash{}small} & {\small Sample text} \\
+\texttt{\textbackslash{}footnotesize} & {\footnotesize Sample text} \\
+\texttt{\textbackslash{}scriptsize} & {\scriptsize Sample text} \\
+\texttt{\textbackslash{}tiny} & {\tiny Sample text} \\
+\hline
+\end{tabularx}
+
+You have to be careful using these font size commands for another reason: They
+set the size of the font for your whole document, and that size will persist
+until the next operation that changes your font size. To restrict them to just
+a few words, surround \emph{the size command and the words it applies to} with
+curly braces, like so:
+
+\texttt{\{\textbackslash{}LARGE My Large Text\}}
+
+Then the font size command will only change the specified text.
+
+\section{Formatting Environments} \label{sec:environments}
+
+We mentioned \emph{environments} in section \ref{sec:preamble} when we were
+discussing the document preamble. An \emph{environment} is a region of text
+that receives special handling when typesetting. Environments generally begin
+with a \texttt{\textbackslash{}begin\{environment\}} command and end with a
+corresponding \texttt{\textbackslash{}end\{environment\}} command.
+
+Here are a couple of the most common \LaTeX{} environments you may use in your
+documents.
+
+\begin{tabularx}{\linewidth}{|l|l|}
+  \caption{Common \LaTeX{} Environments}  \\
+  \hline
+  \textbf{Environment Name} & \textbf{Function} \\
+  \hline
+  \endfirsthead
+  \caption{Common \LaTeX{} Environments (continued)} \\
+  \hline
+  \textbf{Environment Name} & \textbf{Function} \\
+  \hline
+  \endhead
+  \texttt{flushleft}        & Left-aligns text \\
+  \texttt{center}           & Centers text \\
+  \texttt{flushright}       & Right-aligns text \\
+  \hline
+  \texttt{itemize}          & Creates a bulleted list \\
+  \texttt{enumerate}        & Creates a bulleted list \\
+  \texttt{description}      & Creates a description list \\
+  \hline
+  \texttt{math}             & Typesets math equations \\
+  \texttt{quotation}        & Typesets quotations \\
+  \texttt{verse}            & Typesets poetry \\
+  \texttt{tabular}          & Typesets tables \\
+  \texttt{picture}          & Typesets simple figures \\
+  \texttt{tikz}             & Typesets diagrams \\
+  \texttt{minted}           & Typesets computer code \\
+  \hline
+\end{tabularx}
+
+Some of these environments take optional parameters that control the
+formatting of the environment. \cite{lshort} provides a tutorial for using
+these environments, so we won't discuss them in detail here.
+
+There are also thousands of add-on \LaTeX{} packages which provide additional
+capabilities.
+
+Some \LaTeX{} packages add new capabilities, such as the \texttt{musixtex}
+package for typesetting sheet music or the \texttt{chessboard} package for
+printing out chess boards.
+
+Others extend and add capabilities to existing environments, like the
+\texttt{ltabularx} package, which adds extended formatting and multi-page
+capabilities to the \texttt{tabular} environment).
+
+You can find details on them with a Google search or on
+\href{https://www.ctan.org}{CTAN}.
+
+\section{Handling Errors} \label{sec:tex_errors}
+
+If you use \LaTeX{} for long enough, you'll eventually make a mistake in your
+formatting commands. It might be a missing \texttt{\}} character at the end of
+a command, or something more complex. In any case, when this happens, \LaTeX{}
+will produce an error and stop. The error will look something like this:
+
+\begin{verbatim}
+! LaTeX Error: \begin{center} on input line 24 
+  ended by \end{document}.
+
+See the LaTeX manual or LaTeX Companion 
+ for explanation.
+Type  H <return>  for immediate help.
+ ...
+
+l.31 \end{document}
+
+?
+\end{verbatim}
+
+When you see this result, first of all, don't panic! Usually the problem is
+something simple, and the error message will usually tell you what's wrong. In
+my example, \LaTeX{} is telling us that we had a
+\texttt{\textbackslash{}begin\{center\}} command on line 24 of the file, but
+we forgot the corresponding \texttt{\textbackslash{}end\{center\}}. In this
+example, \LaTeX{} got to the \texttt{\textbackslash{}end\{document\}} command
+on line 31 of our file without finding the
+\texttt{\textbackslash{}end\{center\}} command. If you're not sure what the
+error messsage means, Google will often provide help.
+
+When \LaTeX{} encounters an error, it will generally stop and give you a prompt
+(the \texttt{?} character above). Sometimes you can just press Enter, and
+\LaTeX{} will attempt to finish processing your document anyway. This will
+usually produce odd results, however. A better solution is to stop \LaTeX{} by
+typing an \texttt{X} and pressing the Enter key. This will return you to your
+command prompt. Then you can edit the \LaTeX{} file to fix the error, and try
+again.
+
+If you're using \emph{arara} to compile your \LaTeX{} files (which we'll talk
+about in section \ref{sec:arara} you won't see the \LaTeX{} command prompt,
+but instead will just get a message like this:
+
+\begin{verbatim}
+  __ _ _ __ __ _ _ __ __ _
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing "my_novel.tex" (size: 27.5 kB, 
+ last modified: 10/01/2021
+07:31:08), please wait.
+
+(PDFLaTeX) PDFLaTeX engine ..... FAILURE
+Total: 1.05 seconds
+\end{verbatim}
+
+Fortunately, \LaTeX{} produces a log file when it runs; it will be named the
+same as your \LaTeX{} \texttt{\.tex} file, but with a \texttt{\.log}
+extension. You can edit this file to see the \LaTeX{} error message produced
+by typesetting your file.
+
+It's helpful when working on your documents to run the \LaTeX{} command often
+when you're doing anything which involves adding \LaTeX{} commands to your
+document --- adjusting formatting, adding an environment, defining or
+customizing commands, etc. That way, when something goes wrong you'll know
+which changes caused the problem.
+
+When you're looking at the output generated by the \LaTeX{} command (in your
+terminal or in the log file), two errors you'll often see call out
+\texttt{underfull hbox} and \texttt{overfull hbox} conditions. A full
+understanding of these errors is beyond the scope of this tutorial, but
+suffice it to say that they describe situations where \LaTeX{} thinks the
+typeset lines of text are either too short (undefull hboxes) or too long
+(overfull hboxes). \LaTeX{} will print out the line of text that created the
+condition, so you should look at your typeset document and make sure the
+formatting of that line is okay. If your line is too long and has run outside
+of the page's margin, you can sometimes manually fix it by breaking the
+paragraph there, or by adding a manual line break with the
+\texttt{\textbackslash{}newline} command.
+
+\section{Structuring Books with \LaTeX{}} \label{sec:structuring}
+
+As you can see from the foregoing, a simple book is just a single
+\texttt{.tex} file written in your text editor, which contains all of the
+commands necessary to typeset your ouvre. There's a challenge, however, with
+this approach. As your work gets bigger, and your formatting demands get more
+complex, this file can get very large and hard to manage.
+
+Thankfully, \LaTeX{} provides a solution. You can split your work into multiple
+files, and then combine them with the \texttt{\textbackslash{}input{}} command. The syntax
+of the command is simply \texttt{\textbackslash{}input\{filename\}}. The file
+name is specified relative to the current file, and you should leave off the
+\texttt{\.tex} extension. So, to include the contents of the file
+\texttt{ch01\.tex} from the \texttt{chapters} subfolder of your current document's
+folder, you'd use the command
+
+\Example{\texttt{\textbackslash{}input\{chapters/ch01\}}}
+
+\section{Getting More Help} \label{sec:resources}
+
+There are a ton of informational resources on the Internet to help you with
+\LaTeX{}. Here are a few good starting places:
+
+\begin{itemize}
+\item \href{https://texfaq.org}{The \TeX{} Frequently Asked Questions List}
+\item \href{https://www.ctan.org/tex-archive/info/lshort/}{A Short
+    Introduction to \LaTeX2e{}}
+\item \href{https://tex.stackexchange.com}{The \TeX{} Stack Exchange}
+\item \cite{latex2e} and \cite{texbook}. The \TeX{}book, \cite{texbook}, will
+  be helpful to you when you start trying to customize \LaTeX{} and create
+  your own styles or commands, but is \emph{not} a beginner's guide.
+\end{itemize}
+
+Now that you know enough to start using \LaTeX{}, let's talk about how to set
+up your writing project.
+
+%%% Local Variables:
+%%% fill-column: 78
+%%% TeX-master: "../latex_tooling_fiction_writing"
+%%% End:

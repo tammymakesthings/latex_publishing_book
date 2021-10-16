@@ -1,0 +1,409 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% This file is the "main" or root file for the book.
+%%%%
+%%%% It describes what packages and content should be included in what order.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Last Updated: Time-stamp: <>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% arara: pdflatex: { shell: yes, synctex: yes }
+% arara: pdflatex: { shell: yes, synctex: yes }
+% arara: pdflatex: { shell: yes, synctex: yes }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt,twoside,openright]{memoir}
+
+\RequirePackage{fix-cm}
+
+\usepackage{etoolbox}
+\usepackage{ifthen}
+\usepackage{bashful}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define toggle settings for the different output formats, so we can perform
+% conditional processing for the different formats.
+%
+% All of the toggles start out set to false, and the appropriate toggle for a
+% given output format is set to true by a sed script in the Makefile.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtoggle{ebook}               % Conditional toggle for ebook formats
+\newtoggle{printbook}           % Conditional toggle for Createspace
+                                % print format
+\newtoggle{betareader}          % Condtiional toggle for beta reader
+                                % print format
+\newtoggle{manuscript}          % Conditional toggle for manuscript
+                                % print format
+\newtoggle{authorcopy}          % Conditional toggle for author copy
+                                % print format
+
+\togglefalse{ebook}
+\togglefalse{printbook}
+\togglefalse{betareader}
+\togglefalse{manuscript}
+\togglefalse{authorcopy}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Enable indexing, which we use to make our "author copy" which includes
+% indexes of characters, settings, etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[xindy]{imakeidx}
+\indexsetup{level=\chapter*,toclevel=chapter}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Load other LaTeX packages we need.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{iftex}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage[T1]{fontenc}
+\usepackage{textcase}
+\usepackage{extramarks}
+\usepackage[object=vectorian]{pgfornament}
+\usepackage{tikz}
+\usepackage{fancyhdr}
+\usepackage{lettrine}
+\usepackage{tcolorbox}
+\usepackage{ltablex}
+\usepackage{tikz}
+\usepackage{titling}
+\ifxetex
+    \usepackage{pdfcolmk}
+    \usepackage{fontspec}
+    \usepackage{pifont}
+\fi
+
+\usepackage{listings}
+\lstloadlanguages{[LaTeX]TeX}
+\lstset{language=[LaTeX]Tex, tabsize=2, numbers=left, numberstyle=\tiny,
+  numbersep=5pt, basicstyle=\ttfamily,
+  keywordstyle=\color{black}\bfseries,
+  identifierstyle=,
+  commentstyle=\color{white},
+  stringstyle=\ttfamily, % typewriter type for strings
+  showstringspaces=false}
+
+
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{exmp}{Example}[section]
+\newcommand{\Example}[1]{\begin{exmp}#1\end{exmp}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define commands to include front matter pages, so they can be easily
+% conditionally included in the different book formats.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\includecoverpage}{%
+    \thispagestyle{empty}
+    \input{front_matter/coverpage}%
+    \cleardoublepage% %
+}
+\newcommand{\includecopyrightpage}{%
+    \thispagestyle{empty}
+    \input{front_matter/copyright}%
+    \cleardoublepage %
+}
+\newcommand{\includededication}{%
+    \thispagestyle{empty}
+    \input{front_matter/dedication}%
+    \cleardoublepage %
+}
+\newcommand{\includeacknowledgements}{%
+    \input{front_matter/acknowledgements}%
+    \cleardoublepage %
+}
+\newcommand{\includeauthorbio}{%
+    \input{end_matter/author}
+    \cleardoublepage %
+}
+\newcommand{\includeauthorindexes}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define a command for scene breaks. We define two commands - \TeXscenebreak
+% for print formats and \HTMLscenebreak for ebook formats. We then define a
+% single \scenebreak command which is conditionally set to \TeXscenebreak or
+% \HTMLscenebreak depending on the output format.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\scenebreak}{%
+  % Make a fancy scrolly thing for a scene break.
+  \noindent
+  \begin{center}
+    {\resizebox{0.5\linewidth}{1ex}
+      {{
+          {\begin{tikzpicture}
+              \node  (C) at (0,0) {};
+              \node (D) at (9,0) {};
+              \path (C) to [ornament=88] (D);
+            \end{tikzpicture}}}}}
+  \end{center}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define a command to put review comments in a box.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tcbuselibrary{listings,breakable,minted}
+
+\newcommand{\Comment}[1]{}
+\newcommand{\ReviewerComment}[2]{}
+\newcommand{\ResearchComment}[1]{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define an HTML version of the \lettrine command, so we can substitute it in
+% for compiling ebook formats.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\HTMLlettrine}[3][]{%
+    \begin{verbatim}
+    %%%HTML
+    <span style="variant: small-caps;">
+    \end{verbatim}
+    #2#3
+    \begin{verbatim}
+    %%%HTML
+    </span>
+    \end{verbatim}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define a command to display a chapter subheading (such as the date).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\subchapter}[1]{
+  \begin{minipage}{\textwidth} %
+    \vspace{2\baselineskip} %
+    \textit{#1} %
+    \vspace{2\baselineskip} %
+  \end{minipage} %
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define a helper command for formatting text messages.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\textmsg}[1]{\texttt{\MakeTextUppercase{#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define helpers for labeled chapter, section, and subsection headings. Each
+% has a starred and non-starred form. The \@ifstar command is an internal
+% command which requires "internal command protection" (see
+% https://texfaq.org/FAQ-atsigns).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\lchapter}[2]{\chapter*{#1} \label{ch_#2}}
+\newcommand{\lsection}[2]{\section*{#1} \label{sec_#2}}
+\newcommand{\lsubsection}[2]{\subsection*{#1} \label{ssec_#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define a helper command to do all the fancyhdr page setup.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\setfancypagenumbering}{%
+    \pagestyle{fancy}
+    \fancyhf{}
+    \setlength{\headheight}{20pt}
+    \cfoot{\small --\ \thepage\ -- \normalsize}
+    \fancypagestyle{plain}{}%
+    \setlength{\footskip}{22pt}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set up the document formats for the different output formats.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%
+% Format: CreateSpace Print Book
+%
+
+\iftoggle{printbook}{ %
+  \setstocksize{8in}{5.25in}
+  \settrimmedsize{\stockheight}{\stockwidth}{*}
+  \setlrmarginsandblock{1.7cm}{1.7cm}{*} % Left and right margin
+  \setulmarginsandblock{1.7cm}{2cm}{*}  % Upper and lower margin
+  \setlength{\footskip}{1.65\baselineskip}
+  \checkandfixthelayout
+
+  \usepackage[protrusion=true,expansion=true]{microtype}
+}
+
+%
+% Format: Author copy (indexed) printable book
+%
+
+\iftoggle{authorcopy}{ %
+  \setstocksize{11in}{8in}
+  \settrimmedsize{\stockheight}{\stockwidth}{*}
+  \setlrmarginsandblock{1in}{1in}{*} % Left and right margin
+  \setulmarginsandblock{1in}{1in}{*}  % Upper and lower margin
+  \setlength{\footskip}{1.65\baselineskip}
+  \checkandfixthelayout
+
+  \usepackage[protrusion=true,expansion=true]{microtype}
+
+  \setlength{\footskip}{1.65\baselineskip}
+
+  \renewcommand{\Comment}[1]{%
+    \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Revision Comment]
+      #1
+    \end{tcolorbox}
+  }
+
+  \renewcommand{\ResearchComment}[1]{%
+    \begin{tcolorbox}[colback=blue!5!white,colframe=blue!60!white,title=Revision Comment]
+      #1
+    \end{tcolorbox}
+  }
+
+  \renewcommand{\ReviewerComment}[2]{%
+    \begin{tcolorbox}[colback=green!5!white,colframe=green!60!black,title=Reviewer Comment: #1]
+      #2
+    \end{tcolorbox}
+  }
+
+  \renewcommand{\includeauthorindexes}{%
+    \setlength{\parskip}{0pt}
+    \printindex[character]
+    \printindex[setting]
+    \printindex[plot]
+    \printindex[revision]
+  }
+
+  \renewcommand{\includeauthorbio}{}
+}
+
+%
+% Format: Beta reader print format
+%
+
+\iftoggle{betareader}{ %
+  \setstocksize{11in}{8in}
+  \settrimmedsize{\stockheight}{\stockwidth}{*}
+  \setlrmarginsandblock{1in}{1in}{*} % Left and right margin
+  \setulmarginsandblock{1in}{1in}{*}  % Upper and lower margin
+
+  \setlength{\footskip}{1.65\baselineskip}
+  \checkandfixthelayout
+
+  \usepackage[protrusion=true,expansion=true]{microtype}
+
+  \setlength{\footskip}{1.65\baselineskip}
+
+  \usepackage{draftwatermark}
+  \SetWatermarkLightness{0.91}
+
+  \renewcommand{\includededication}{}
+  \renewcommand{\includeacknowledgements}{}
+}
+
+%
+% Format: Manuscript format print file
+%
+
+\iftoggle{manuscript}{ %
+  \setstocksize{11in}{8in}
+  \settrimmedsize{\stockheight}{\stockwidth}{*}
+  \setlrmarginsandblock{1in}{1in}{*} % Left and right margin
+  \setulmarginsandblock{1in}{1in}{*}  % Upper and lower margin
+
+  \setlength{\footskip}{1.65\baselineskip}
+  \checkandfixthelayout
+}
+
+%
+% Format: Ebook
+%
+
+\iftoggle{ebook}{ %%
+    \renewcommand{\scenebreak}{\par\hrule\par}
+    \renewcommand{\lettrine}[3][]{\HTMLlettrine#1#2#3}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set the attributes for the title page.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Body Dump}
+\author{Tammy Cravit}
+
+\makeindex[name=character,title=Character Index]
+\makeindex[name=setting,title=Setting Index]
+\makeindex[name=plot,title=Index of Plot Points]
+\makeindex[name=revision,title=Index of Revision Notes]
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Include the front matter pages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{gobble}
+\pagestyle{empty}
+
+\includecoverpage
+\includecopyrightpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Reset the page content height and paragraph spacing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\addtolength{\textheight}{-1\baselineskip}
+\par
+\setlength{\parskip}{0.4\baselineskip}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Include the dedication and acknowledgement pages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frontmatter
+
+\pagenumbering{roman}
+
+\setfancypagenumbering
+
+\includededication
+
+\setlength{\parskip}{0.4\baselineskip}
+\includeacknowledgements
+
+\setfancypagenumbering
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Include the mainmatter pages.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mainmatter
+
+\pagestyle{fancy}
+\setfancypagenumbering
+
+\bash[stdoutFile=.chapters.tex]
+{ shopt -s nullglob; for file in chapters/*.tex; do echo "\\input{$file}"; done; }
+\END
+\input{.chapters.tex}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % Include the backmatter (epilogue etc) pages.
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\backmatter
+
+%
+% The ebook includes the "about the author" page.
+%
+\includeauthorbio
+\includeauthorindexes
+
+\end{document}
+
+%%% Local Variables:
+%%% Tex-auto-untabify: t
+%%% fill-column: 78
+%%% End:

@@ -1,0 +1,129 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Writing --- and Publishing -- Novels with LaTeX
+% By Tammy Cravit, tammymakesthings@gmail.com
+%
+% Version     : 1.00
+% Created at  : <Thu Sep 30 06:07:37 2021>
+% Last updated: Time-stamp: <2021-10-14 09:22:04 tammy>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% File Name   : chapters/02_tooling.tex
+% Content     : Chapter 2: Setting Up the Tools
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (c) 2021, Tammy Cravit. All rights reserved.  This work is
+% licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+% International License.
+%
+% You are free to:
+%
+%     Share — copy and redistribute the material in any medium or format
+%
+%     Adapt — remix, transform, and build upon the material
+%
+%     The licensor cannot revoke these freedoms as long as you follow the
+%     license terms.
+%
+% Under the following terms:
+%
+%     Attribution — You must give appropriate credit, provide a link to the
+%     license, and indicate if changes were made. You may do so in any
+%     reasonable manner, but not in any way that suggests the licensor
+%     endorses you or your use.
+%
+%     NonCommercial — You may not use the material for commercial purposes.
+%
+%     ShareAlike — If you remix, transform, or build upon the material, you
+%     must distribute your contributions under the same license as the
+%     original.
+%
+%     No additional restrictions — You may not apply legal terms or
+%     technological measures that legally restrict others from doing anything
+%     the license permits.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Setting Up the Tools} \label{chap:tooling}
+
+Before we can start actually writing, we need to get some tooling set up. This
+is perhaps the biggest downside of the whole process: You've got to be willing
+to spend some time and energy on tooling. It's not as straightforward to get
+up and running as simply downloading Word or opening a Google Doc.
+
+For me, the investment in tooling is worth it. For you, it might not be. But
+assuming you're with me so far and willing to make the investment, here's what
+you'll need to get going:
+
+\begin{description}
+
+\item [A good text editor]. As I mentioned earlier, \LaTeX{} documents are plain
+  text files. You can edit them with just about any editor you like. (Even
+  Word, though this has complications I don't recomemnd. If you don't already
+  have a text editor you prefer to use, here are a couple of good options:
+
+  \begin{description}
+    \item [\href{https://code.visualstudio.com}{Visual Studio Code}] --- A
+      great, free, cross-platform (Windows, Mac, and Linux) editing suite with lots
+      of optional extensions for all kinds of programming languages and
+      editing
+      tasks. \href{https://pwsmith.github.io/2020/06/05/setting-up-a-text-editor-for-latex-vscode/}{This
+        article} talks about setting VSCode up for \LaTeX{} editing.
+    \item [\href{https://www.sublimetext.com}{Sublime Text}] --- Another
+      cross-platform editor with great add-on support for \LaTeX. \$40 and, in
+      my opinion, worth every penny.
+    \item [\href{https://notepad-plus-plus.org}{Notepad++}] --- An excellent
+      Windows editor for text files, similar to the Notepad program that comes
+      with Windows but with lots of added features.
+    \item [\href{https://www.barebones.com/products/bbedit/}{BBEdit}] --- A
+      storied Mac text editor (it's been around since the 1990s), with a great
+      feature set and a clean, easy-to-use interface. The basic version is
+      free, and you can unlock the full feature set for \$50.
+    \item [\href{http://www.tug.org/texworks/}{TeXworks}] --- Included with
+      the TeXLive and MacTeX distributions, and includes easy previewing of
+      \LaTeX{} files. I find it to be a bit ``cluttered'' to work with, but it's
+      worth giving it a try.
+    \item [\href{https://www.vim.org}{Vim} and
+      \href{https://www.gnu.org/software/emacs/}{Emacs}] --- These are
+      designed for programmers, so they're powerful but less easy to use than
+      some of the other options listed above. I personally use Emacs, because
+      it's been my editor of choice since college, but it definitely has a
+      steeper learning curve.
+  \end{description}
+
+  If you don't have a preference already, I recommend starting with VSCode or
+  Sublime Text.
+
+\item [The \TeX{} and \LaTeX{} Toolset]. If you're on a Linux system, this is easy
+  to install. Just use your Linux distribution's package manager to install
+  \href{https://tug.org/texlive/}{TeXLive}. For Windows users, follow the
+  \href{https://tug.org/texlive/windows.html}{TeXLive for Windows}
+  installation instructions. Mac users should follow the
+  \href{https://tug.org/mactex/}{MacTeX} installation instructions.
+
+\item [Windows Subsystem for Linux (WSL)]. The \TeX{} and \LaTeX{} tools, as well
+  as Perl, were designed to be used from a command prompt. Heck, they were
+  designed before today's graphical user interfaces even existed! Linux and
+  Mac users have access to fully-featured command line environments with all
+  the ancillary tools you'll need. Windows users should install the Microsoft
+  Windows Subsystem For Linux, version 2 (WSL2), to get those tools.
+  \href{https://insaid.medium.com/setting-up-wsl-2-in-windows-10-87e819d08d2e}{This
+    document} explains how. You'll want to install the
+  \href{https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701}{Windows
+    Terminal} too.
+
+\item [Perl and LaTeXML] \href{https://www.perl.org/}{Perl} is a programming
+  language and tool that is available on every platform. My build environment
+  uses a Perl-based tool called \href{https://dlmf.nist.gov/LaTeXML/}{LaTeXML}
+  to convert the \LaTeX{} source files into a format that can be used to build
+  the ebook file. 
+
+\item [Git]. Optional, but recommended. Git is a version control system for
+  programmers, but it can handle any text-based files, including your \LaTeX
+  files. Think of it as a (mostly) automatic ``track changes'' for your work.
+
+\end{description}
+
+Once you've gotten everything installed, you're ready to start working. But
+first, a quick crash course on \LaTeX{} is in order.
+
+%%% Local Variables:
+%%% fill-column: 78
+%%% TeX-master: "../latex_tooling_fiction_writing"
+%%% End:
